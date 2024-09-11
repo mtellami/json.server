@@ -1,15 +1,25 @@
-import { getHandler } from "./getHandler";
-import { postHandler } from './postHandler';
-import { deleteHandler } from './deleteHandler';
+import { JsonRequestContext } from "@interfaces";
+import { getHandler, postHandler, deleteHandler } from "./handlers";
+import { RegexService } from "@services";
+import { HttpBadRequest } from "@http";
 
-export async function POST(req: Request, context: { params: { filename: string } }) {
-  return postHandler(req, context);
+export async function GET(request: Request, context: JsonRequestContext) {
+  if (!RegexService.isFilename(context.params.filename)) {
+    return new HttpBadRequest('Invalid filename');
+  }
+  return getHandler(request, context);
 }
 
-export async function GET(req: Request, context: { params: { filename: string } }) {
-  return getHandler(req, context);
+export async function POST(request: Request, context: JsonRequestContext) {
+  if (!RegexService.isFilename(context.params.filename)) {
+    return new HttpBadRequest('Invalid filename');
+  }
+  return postHandler(request, context);
 }
 
-export async function DELETE(req: Request, context: { params: { filename: string } }) {
-  return deleteHandler(req, context);
+export async function DELETE(request: Request, context: JsonRequestContext) {
+  if (!RegexService.isFilename(context.params.filename)) {
+    return new HttpBadRequest('Invalid filename');
+  }
+  return deleteHandler(request, context);
 }

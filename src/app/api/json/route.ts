@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { FileService } from '@services';
+import { HttpInternalServerError } from '@http';
 
 export async function GET() {
   try {
@@ -7,6 +8,6 @@ export async function GET() {
     return NextResponse.json({ files: files });
   } catch (error) {
     console.error(error);
-    return new NextResponse('Oops! something went wrong.', { status: 500 });
+    return new HttpInternalServerError();
   }
 }
