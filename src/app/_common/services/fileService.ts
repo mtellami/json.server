@@ -6,47 +6,56 @@ const jsonDirectory = path.join(process.cwd(), JSONFOLDER);
 
 export class FileService {
 
-  static async directorExists() {
-    try {
-      await fs.promises.access(jsonDirectory, fs.constants.F_OK);
-    } catch {
-      await fs.promises.mkdir(jsonDirectory, { recursive: true });
-    }
-  }
-
   static async writeFile(filename: string, content: object): Promise<void> {
-    await this.directorExists();
     const filePath = path.join(jsonDirectory, `${filename}.json`);
-    await fs.promises.writeFile(filePath, JSON.stringify(content, null, 2), 'utf8');
+    await fs.promises.mkdir(path.dirname(filePath), { recursive: true });
+
+    await fs.promises.writeFile(
+      filePath,
+      JSON.stringify(content, null, 2), 
+      { encoding: 'utf8', flag: 'w' }
+    );
   }
 
-  static async readFile(filename: string): Promise<object> {
-   await this.directorExists();
+  static async readFile(filename: string): Promise<object | null> {
+    await fs.promises.mkdir(jsonDirectory, { recursive: true });
 
     const filePath = path.join(jsonDirectory, `${filename}.json`);
-    if (!fs.existsSync(filePath)) {
-      throw new Error('File not found');
-    }
+    if (!fs.existsSync(filePath)) return null;
+
     const fileContent = await fs.promises.readFile(filePath, 'utf8');
     return JSON.parse(fileContent);
   }
 
   static async deleteFile(filename: string): Promise<void> {
-   await this.directorExists();
-
+    await fs.promises.mkdir(jsonDirectory, { recursive: true });
     const filePath = path.join(jsonDirectory, `${filename}.json`);
-    await fs.promises.access(filePath, fs.constants.F_OK).catch(() => {
-    throw new Error('File not found');
+    await fs.promises.unlink(filePath).then(async () => {
+
+    for (
+      let dir = path.dirname(filePath), files = await fs.promises.readdir(dir);
+      dir !== jsonDirectory && files.length === 0;
+      dir = path.dirname(dir), files = await fs.promises.readdir(dir)
+    ) {
+      await fs.promises.rmdir(dir);
+    }
     });
-    await fs.promises.unlink(filePath);
   }
 
-  static async readDir(): Promise<string[]> {
-   await this.directorExists();
+  static async readDir(dir: string = jsonDirectory): Promise<string[]> {
+    let results = [];
+    const entries = await fs.promises.readdir(dir, { withFileTypes: true });
 
-   const files = await fs.promises.readdir(jsonDirectory);
-   return files
-   .filter(file => file.endsWith('.json'))
-   .map(file => path.basename(file, '.json'));
+    for (const entry of entries) {
+      const fullPath = path.join(dir, entry.name);
+      if (entry.isDirectory()) {
+        const subFiles = await FileService.readDir(fullPath);
+        results.push(...subFiles);
+      } else if (entry.isFile() && fullPath.endsWith('.json')) {
+        const relativePath = path.relative(jsonDirectory, fullPath);
+        results.push(relativePath.slice(0, -'.json'.length));
+      }
+    }
+    return results
   }
 }
