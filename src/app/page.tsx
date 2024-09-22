@@ -1,19 +1,27 @@
 'use client';
 
 import { Popup } from "@/components/popup";
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Records } from "@/components/records";
 import { Button } from "@/components/ui/button";
 import { FileJson } from "lucide-react"
-
+import { Axios } from "../utils/axios";
 
 export default function Home() {
-  const endpoints = ['user/john', 'data', 'charts/pie', 'table/species'];
+  const [list, setList] = useState<string[]>([]);
+  const [endpoint, setEndpoint] = useState<string>('');
+
+  useEffect(() => {
+    (async () => {
+      const { data } = await Axios.get('');
+      setList(data.files);
+    })();
+  }, [])
+
   const showPopup = (endpoint: string) => {
     setEndpoint(endpoint);
     document.getElementById('dialog-trigger')?.click();
   }
-  const [endpoint, setEndpoint] = useState<string>('');
 
   return (
     <div className="w-full h-full flex flex-col gap-8 justify-center items-center bg-slate-50">
@@ -30,7 +38,7 @@ export default function Home() {
             onClick={() => showPopup('')}
           >new</Button>
         </div>
-        <Records endpoints={endpoints} preview={showPopup} />
+        <Records endpoints={list} preview={showPopup} />
         <Popup endpoint={endpoint} />
       </div>
     </div>

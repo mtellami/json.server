@@ -4,28 +4,34 @@ import { Copy } from "lucide-react"
 import { Button } from "./ui/button";
 import { useEffect, useRef, useState } from "react";
 import { Axios } from "../utils/axios";
+import { Spinner } from "./ui/spinner";
 
 export function DioalogBody({ endpoint }: { endpoint: string }) {
-  const host = 'http://localhost:3000/';
+  const host = 'http://localhost:3000/api/json/';
   const [error, setError] = useState<string>('');
   const [url, setUrl] = useState<string>('');
-  const [json, setJson] = useState<string>(JSON.stringify({
-    key: "value"
-  }));
-  const dataField = useRef<HTMLTextAreaElement>(null);
+  const [json, setJson] = useState<string>('');
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    (async () => {
+      if (endpoint !== '') {
+        const { data } = await Axios.get(`/${endpoint}`);
+        setJson(JSON.stringify(data));
+      } else {
+        setJson('{}');
+      }
+    })();
+  }, [])
 
   useEffect(() => {
     setUrl(endpoint);
-    const textarea = dataField.current;
-    if (textarea) {
-      textarea.focus();
-      textarea.selectionStart = textarea.selectionEnd = textarea.value.length;
-    }
+    inputRef.current?.focus();
   }, [endpoint])
 
   const onJsonChange = (e: any) => {
-    setJson(e.target.value);
     try {
+      setJson(e.target.value);
       JSON.parse(e.target.value);
       setError('');
     } catch (err: any) {
@@ -43,8 +49,7 @@ export function DioalogBody({ endpoint }: { endpoint: string }) {
   }
   const save = async () => {
     try {
-      const response = await Axios.put(`/${url}`, JSON.parse(json));
-      console.log(response);
+      await Axios.put(`/${url}`, JSON.parse(json));
       document.getElementById('dialog-close')?.click();
     } catch (err: any) {
       setError(err.message);
@@ -58,26 +63,30 @@ export function DioalogBody({ endpoint }: { endpoint: string }) {
           <div className="flex items-center px-2 grow gap-2">
             <h3 className="font-bold">URL: </h3>
             <input 
-              className="h-full p-2 grow outline-0 rounded "
+              ref={inputRef}
+              className="h-full p-2 grow outline-0 rounded"
               type="text"
               value={`${host}${url}`}
               onChange={onUrlChange}
             />
           </div>
-          <Copy />
+          <Copy
+            onClick={() => {navigator.clipboard.writeText(`${inputRef.current?.value}`)}}
+            className="cursor-pointer active:text-green-500"
+            />
         </div>
-        <Button
+        <Button disabled={error !== '' || url === ''}
           className="m-0 bg-emerald-600 hover:bg-emerald-900 text-white"
           onClick={save}
           >save</Button>
       </div>
-      <div className="border border-slate-300 rounded min-h-96">
-        <textarea
-          ref={dataField}
+      <div className="border border-slate-300 rounded min-h-96 flex items-center justify-center">
+        {json == '' && <Spinner size="medium" />}
+        {json !== '' && <textarea
           className="resize-none w-full p-2 h-[500px] outline-0"
           value={json}
           onChange={onJsonChange} 
-          />
+          />}
       </div>
       <h1 className="text-red-400">{error}</h1>
     </div>

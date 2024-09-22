@@ -10,7 +10,6 @@ import {
 import { Button } from "@/components/ui/button"
 
 export function Records({ endpoints, preview }: { endpoints: string[], preview: Function }) {
-
   return (
     <Table>
       <TableBody>
