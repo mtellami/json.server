@@ -43,7 +43,7 @@ export class FileService {
   }
 
   static async readDir(dir: string = jsonDirectory): Promise<string[]> {
-    let results = [];
+    const results = [];
     const entries = await fs.promises.readdir(dir, { withFileTypes: true });
 
     for (const entry of entries) {

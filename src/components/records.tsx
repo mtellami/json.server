@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/table"
 import { Button } from "@/components/ui/button"
 
-export function Records({ endpoints, preview }: { endpoints: string[], preview: Function }) {
+export function Records({ endpoints, preview }: { endpoints: string[], preview: (endpoint: string) => void }) {
   return (
     <Table>
       <TableBody>
