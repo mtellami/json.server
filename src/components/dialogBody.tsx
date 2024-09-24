@@ -81,11 +81,12 @@ export function DioalogBody({ endpoint }: { endpoint: string }) {
           >save</Button>
       </div>
       <div className="border border-slate-300 rounded min-h-96 flex items-center justify-center">
-        {json == '' && <Spinner size="medium" />}
-        {json !== '' && <textarea
-          className="resize-none w-full p-2 h-[500px] outline-0"
-          value={json}
-          onChange={onJsonChange} 
+        {json === '' ? 
+          <Spinner size="medium" /> : 
+          <textarea
+            className="resize-none w-full p-2 h-[500px] outline-0"
+            value={json}
+            onChange={onJsonChange} 
           />}
       </div>
       <h1 className="text-red-400">{error}</h1>
