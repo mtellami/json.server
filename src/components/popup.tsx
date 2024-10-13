@@ -12,7 +12,6 @@ import {
 import { DioalogBody } from "./dialogBody";
 
 export function Popup({ endpoint }: { endpoint: string }) {
-
   return (
     <Dialog>
       <DialogTrigger id="dialog-trigger" className="hidden" />

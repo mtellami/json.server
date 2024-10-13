@@ -2,9 +2,10 @@
 
 import { Copy } from "lucide-react"
 import { Button } from "./ui/button";
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { Axios } from "../utils/axios";
 import { Spinner } from "./ui/spinner";
+import { JsonListContext } from "@/context/jsonList";
 
 export function DioalogBody({ endpoint }: { endpoint: string }) {
   const host = 'http://localhost:3000/api/json/';
@@ -12,6 +13,8 @@ export function DioalogBody({ endpoint }: { endpoint: string }) {
   const [url, setUrl] = useState<string>('');
   const [json, setJson] = useState<string>('');
   const inputRef = useRef<HTMLInputElement>(null);
+
+  const { getJsonList  } = useContext(JsonListContext);
 
   useEffect(() => {
     (async () => {
@@ -50,12 +53,13 @@ export function DioalogBody({ endpoint }: { endpoint: string }) {
   const save = async () => {
     try {
       await Axios.put(`/${url}`, JSON.parse(json));
+      await getJsonList();
       document.getElementById('dialog-close')?.click();
     } catch (err: any) {
       setError(err.message);
     }
   }
-  
+
   return (
     <div className="flex flex-col gap-4">
       <div className="flex justify-between items-center gap-4">

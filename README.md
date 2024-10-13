@@ -1,7 +1,28 @@
 # JSON dummy data provider
 
-- [x] API endpoints [GET, PUT]
-- [x] UI page
-- [ ] Docker image
-- [ ] ENV 
-- [ ] JSON editor
+### Overview
+- Json server for web development frontend testing.
+
+### Usage
+
+#### Docker image
+```zsh
+docker pull mtellami/json-server:latest
+```
+
+```zsh
+docker run -p 3000:3000 mtellami/json-server:latest
+```
+
+#### Local
+```zsh
+git clone https://github.com/mtellami/json.server.git
+```
+
+```zsh
+npm run start
+```
+
+### Features
+
+#### Create, Update, Delete
