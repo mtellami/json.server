@@ -26,3 +26,6 @@ npm run start
 ### Features
 
 #### Create, Update, Delete
+
+:TODO
+[ ] ❌​ Refactor project structure.
