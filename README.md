@@ -5,21 +5,13 @@
 
 ### Usage
 
-#### Docker image
-```zsh
-docker pull mtellami/json-server:latest
-```
-
-```zsh
-docker run -p 3000:3000 mtellami/json-server:latest
-```
-
-#### Local
+#### Run
 ```zsh
 git clone https://github.com/mtellami/json.server.git
 ```
 
 ```zsh
+npm run build
 npm run start
 ```
 
@@ -28,4 +20,5 @@ npm run start
 #### Create, Update, Delete
 
 :TODO
-[ ] ❌​ Refactor project structure.
+[ ] Refactor project structure.
+[ ] Docker containerization.
