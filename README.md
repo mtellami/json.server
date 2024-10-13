@@ -20,5 +20,5 @@ npm run start
 #### Create, Update, Delete
 
 ##### :TODO 
-[ ] Refactor project structure.
-[ ] Docker containerization.
+- [ ] Refactor project structure.
+- [ ] Docker containerization.
