@@ -1,7 +1,7 @@
 # JSON dummy data provider
 
 ### Overview
-- Json server for web development frontend testing.
+- Json server for web development that enable you to test your frontend with static data.
 
 ### Usage
 
